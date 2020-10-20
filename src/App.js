@@ -8,8 +8,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import useStyles from './app.style';
 
 const schema = yup.object().shape({
-  firstname: yup.string().required(),
-  secondname: yup.string().required(),
+  firstname: yup.string().trim().required(),
+  secondname: yup.string().trim().required(),
 });
 
 const App = () => {
@@ -22,11 +22,23 @@ const App = () => {
   });
   const classes = useStyles();
 
-  const flames = (firstName, secondName) => {
+  const flames = (value1, value2) => {
+    let firstName = value1.trim();
+    let secondName = value2.trim();
+    if (!firstName && !secondName) return 'empty value found';
+    firstName = firstName.split(' ').join('');
+    secondName = secondName.split(' ').join('');
+    if (!firstName.localeCompare(secondName)) return 'firstname and secondname are same';
+    const firstNameDiffValue = firstName.split('').filter((d) => !secondName.split('').includes(d));
+    const secondNameDiffValue = secondName.split('').filter((d) => !firstName.split('').includes(d));
+    console.log(firstNameDiffValue);
+    console.log(secondNameDiffValue);
+    const diffCount = +firstNameDiffValue.length + +secondNameDiffValue.length;
+    return diffCount;
   };
 
   useEffect(() => {
-    flames('sakthivel', 'prabhu');
+    console.log(flames('tomr', 'jerry'));
   }, []);
 
   const onSubmit = (data) => { console.log(data); setFormValue(data); };
